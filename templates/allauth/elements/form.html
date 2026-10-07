@@ -1,0 +1,8 @@
+{% load allauth %}
+<form class="formulario"
+      method="{{ attrs.method }}"
+      {% if attrs.action %}action="{{ attrs.action }}"{% endif %}
+      {% if attrs.id %}id="{{ attrs.id }}"{% endif %}>
+    {% slot body %}{% endslot %}
+    <div class="formulario__acciones">{% slot actions %}{% endslot %}</div>
+</form>

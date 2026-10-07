@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Inicio" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Inicio" %}</h1>
+    <p>
+        {% blocktranslate trimmed with correo=user.correo %}
+            Sesión iniciada como {{ correo }}.
+        {% endblocktranslate %}
+    </p>
+{% endblock contenido %}

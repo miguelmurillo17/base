@@ -1,0 +1,75 @@
+{% load i18n static %}<!doctype html>
+{% get_current_language as idioma %}
+<html lang="{{ idioma }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}{% endblock titulo %} - {{ nombre_sitio }}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block cabecera %}{% endblock cabecera %}
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado__contenido">
+            <a class="encabezado__marca" href="{% url 'inicio' %}">{{ nombre_sitio }}</a>
+            {% if user.is_authenticated %}
+                <nav class="navegacion" aria-label="{% translate 'Cuenta' %}">
+                    <ul class="navegacion__lista">
+                        {% if user.is_staff %}
+                            <li>
+                                <a href="{% url 'admin:index' %}">
+                                    {% translate "Administración" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'account_email' %}">
+                                {% translate "Correo electrónico" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'account_change_password' %}">
+                                {% translate "Contraseña" %}
+                            </a>
+                        </li>
+                        {% url "mfa_index" as url_doble_factor %}
+                        {% if doble_factor_activo and url_doble_factor %}
+                            <li>
+                                <a href="{{ url_doble_factor }}">
+                                    {% translate "Autenticación de dos factores" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <form class="navegacion__formulario"
+                                  method="post"
+                                  action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="boton-enlace">
+                                    {% translate "Cerrar sesión" %}
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </header>
+    {% if messages %}
+        <div class="contenedor">
+            <ul class="mensajes">
+                {% for mensaje in messages %}
+                    <li role="{% if mensaje.level_tag == 'error' %}alert{% else %}status{% endif %}"
+                        class="mensaje mensaje--{{ mensaje.level_tag }}">
+                        {{ mensaje }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <main class="contenedor principal">
+        {% block contenido %}{% endblock contenido %}
+    </main>
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>

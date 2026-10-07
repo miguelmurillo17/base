@@ -1,0 +1,29 @@
+{% comment %}
+Plantilla común de un campo. La etiqueta va encima del campo y sin dos puntos, salvo en
+las casillas de verificación, donde va después. La ayuda y los errores van debajo.
+{% endcomment %}
+{% if field.use_fieldset %}
+    <fieldset class="campo{% if field.errors %} campo--con-error{% endif %}">
+        {% if field.label %}<legend>{{ field.label }}</legend>{% endif %}
+        {{ field }}
+{% elif field.widget_type == "checkbox" %}
+    <div class="campo campo--casilla{% if field.errors %} campo--con-error{% endif %}">
+        {{ field }}
+        {% if field.label %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% endif %}
+{% else %}
+    <div class="campo{% if field.errors %} campo--con-error{% endif %}">
+        {% if field.label %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% endif %}
+        {{ field }}
+{% endif %}
+        {% if field.help_text %}
+            <div class="campo__ayuda"
+                 {% if field.auto_id %}id="{{ field.auto_id }}_helptext"{% endif %}>
+                {{ field.help_text|safe }}
+            </div>
+        {% endif %}
+        {% if field.errors %}<div class="campo__errores">{{ field.errors }}</div>{% endif %}
+{% if field.use_fieldset %}</fieldset>{% else %}</div>{% endif %}

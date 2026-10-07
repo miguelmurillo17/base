@@ -1,0 +1,608 @@
+# Traducciones propias del proyecto para español de México.
+#
+# Corrigen los textos de Django y de django-allauth que se muestran en las pantallas y
+# correos del proyecto y no cumplen docs/lineamientos/diseno-de-interfaz.md: los que tratan
+# de usted pasan a tú, y se corrigen las mayúsculas en cada palabra, los términos distintos
+# para un mismo concepto y los errores de la traducción original. Los textos que ya tratan
+# de tú y no tienen otro problema no se incluyen. Tienen prioridad sobre los catálogos de
+# las bibliotecas porque el directorio está en LOCALE_PATHS. Cada msgid debe existir tal
+# cual en el catálogo de la biblioteca; config/tests.py lo comprueba.
+#
+# Después de editar este archivo se compila con GNU gettext (en Windows, desde la consola
+# Bash de Git con .venv/Scripts/python.exe):
+#   python manage.py compilemessages --locale es_MX --ignore ".venv*"
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Django
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Authentication and Authorization"
+msgstr "Autenticación y autorización"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "This account is inactive."
+msgstr ""
+"Esta cuenta está dada de baja. Para volver a usarla, comunícate con el "
+"personal del sitio."
+
+msgid "January"
+msgstr "enero"
+
+msgid "February"
+msgstr "febrero"
+
+msgid "March"
+msgstr "marzo"
+
+msgid "April"
+msgstr "abril"
+
+msgid "May"
+msgstr "mayo"
+
+msgid "June"
+msgstr "junio"
+
+msgid "July"
+msgstr "julio"
+
+msgid "August"
+msgstr "agosto"
+
+msgid "September"
+msgstr "septiembre"
+
+msgid "October"
+msgstr "octubre"
+
+msgid "November"
+msgstr "noviembre"
+
+msgid "December"
+msgstr "diciembre"
+
+msgid "Enter a valid email address."
+msgstr "Escribe una dirección de correo electrónico válida."
+
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+"Asegúrate de que este valor tenga como máximo %(limit_value)d carácter "
+"(tiene %(show_value)d)."
+msgstr[1] ""
+"Asegúrate de que este valor tenga como máximo %(limit_value)d caracteres "
+"(tiene %(show_value)d)."
+
+#, python-format
+msgid "Your password must contain at least %(min_length)d character."
+msgid_plural "Your password must contain at least %(min_length)d characters."
+msgstr[0] "Tu contraseña debe contener al menos %(min_length)d carácter."
+msgstr[1] "Tu contraseña debe contener al menos %(min_length)d caracteres."
+
+msgid "Your password can’t be too similar to your other personal information."
+msgstr "Tu contraseña no puede parecerse demasiado a tu información personal."
+
+msgid "Your password can’t be a commonly used password."
+msgstr "Tu contraseña no puede ser una contraseña de uso común."
+
+msgid "Your password can’t be entirely numeric."
+msgstr "Tu contraseña no puede ser completamente numérica."
+
+msgid "Are you sure?"
+msgstr "¿Quieres continuar?"
+
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+"Estás viendo este mensaje porque este sitio HTTPS requiere que tu navegador "
+"web envíe el encabezado “Referer”, pero no se envió ninguno. Este "
+"encabezado es necesario por razones de seguridad, para garantizar que "
+"terceros no hayan tomado el control de tu navegador."
+
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please "
+"re-enable them, at least for this site, or for HTTPS connections, or for "
+"“same-origin” requests."
+msgstr ""
+"Si configuraste tu navegador para desactivar los encabezados “Referer”, "
+"vuelve a activarlos, al menos para este sitio, para las conexiones HTTPS o "
+"para las solicitudes del “mismo origen”."
+
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. "
+"The CSRF protection requires the “Referer” header to do strict referer "
+"checking. If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+"Si usas la etiqueta <meta name=\"referrer\" content=\"no-referrer\"> o incluyes "
+"el encabezado “Referrer-Policy: no-referrer”, elimínalos. La protección "
+"CSRF necesita el encabezado “Referer” para comprobar de forma estricta la "
+"procedencia de la solicitud. Si te preocupa la privacidad, usa alternativas "
+"como <a rel=\"noreferrer\" …> en los enlaces a sitios de terceros."
+
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+"Si configuraste tu navegador para desactivar las cookies, vuelve a "
+"activarlas, al menos para este sitio o para las solicitudes del “mismo "
+"origen”."
+
+# django-allauth
+
+msgid "The email address and/or password you specified are not correct."
+msgstr ""
+"La dirección de correo electrónico o la contraseña que escribiste no son "
+"correctas."
+
+msgid "Please type your current password."
+msgstr "Escribe tu contraseña actual."
+
+msgid "Too many failed login attempts. Try again later."
+msgstr ""
+"Hubo demasiados intentos fallidos de inicio de sesión. Vuelve a intentarlo "
+"más tarde."
+
+msgid "Be patient, you are sending too many requests."
+msgstr ""
+"Se enviaron demasiadas solicitudes. Espera unos minutos antes de volver a "
+"intentarlo."
+
+msgid "Use your password"
+msgstr "Usar tu contraseña"
+
+msgid "Use authenticator app or code"
+msgstr "Usar la aplicación de autenticación o un código de recuperación"
+
+msgid "Use a security key"
+msgstr "Usar una llave de seguridad"
+
+msgid "Forgot your password?"
+msgstr "¿Olvidaste tu contraseña?"
+
+msgid "You must type the same password each time."
+msgstr "Debes escribir la misma contraseña en los dos campos."
+
+msgid ""
+"You cannot add an email address to an account protected by two-factor "
+"authentication."
+msgstr ""
+"No puedes agregar ni cambiar la dirección de correo electrónico de una "
+"cuenta protegida con la autenticación de dos factores."
+
+msgid ""
+"You cannot activate two-factor authentication until you have verified your "
+"email address."
+msgstr ""
+"No puedes activar la autenticación de dos factores hasta que verifiques tu "
+"dirección de correo electrónico."
+
+msgid "Backup key"
+msgstr "Llave de respaldo"
+
+#, python-brace-format
+msgid "Key nr. {number}"
+msgstr "Llave n.º {number}"
+
+msgid "Authenticator code"
+msgstr "Código de la aplicación de autenticación"
+
+msgid "Passwordless"
+msgstr "Inicio de sesión sin contraseña"
+
+msgid ""
+"Enabling passwordless operation allows you to sign in using just this key, "
+"but imposes additional requirements such as biometrics or PIN protection."
+msgstr ""
+"Activar el inicio de sesión sin contraseña te permite iniciar sesión solo "
+"con esta llave, pero exige requisitos adicionales, como biometría o un PIN."
+
+msgid "Accounts"
+msgstr "Direcciones de correo"
+
+msgid "MFA"
+msgstr "Autenticación de dos factores"
+
+msgid "Key"
+msgstr "Llave"
+
+msgid "Account Inactive"
+msgstr "Cuenta dada de baja"
+
+msgid "Please reauthenticate to safeguard your account."
+msgstr "Para proteger tu cuenta, vuelve a autenticarte."
+
+msgid "Password Reset"
+msgstr "Restablecer contraseña"
+
+msgid "Re-send Verification"
+msgstr "Reenviar verificación"
+
+#, python-format
+msgid ""
+"You are receiving this email because you or someone else tried to signup "
+"for an\n"
+"account using email address:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"However, an account using that email address already exists.  In case you "
+"have\n"
+"forgotten about this, please use the password forgotten procedure to "
+"recover\n"
+"your account:\n"
+"\n"
+"%(password_reset_url)s"
+msgstr ""
+"Recibes este correo porque tú u otra persona intentaron crear una cuenta "
+"con la\n"
+"dirección de correo electrónico:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"Sin embargo, ya existe una cuenta con esa dirección. Si no recuerdas tu\n"
+"contraseña, puedes restablecerla y recuperar el acceso a tu cuenta en el\n"
+"siguiente enlace:\n"
+"\n"
+"%(password_reset_url)s"
+
+msgid ""
+"You are receiving this mail because the following change was made to your "
+"account:"
+msgstr "Recibes este correo porque se hizo el siguiente cambio en tu cuenta:"
+
+#, python-format
+msgid ""
+"If you do not recognize this change then please take proper security "
+"precautions immediately. The change to your account originates from:\n"
+"\n"
+"- IP address: %(ip)s\n"
+"- Browser: %(user_agent)s\n"
+"- Date: %(timestamp)s"
+msgstr ""
+"Si no reconoces este cambio, toma de inmediato las medidas de seguridad "
+"necesarias. El cambio en tu cuenta se hizo desde:\n"
+"\n"
+"- Dirección IP: %(ip)s\n"
+"- Navegador: %(user_agent)s\n"
+"- Fecha: %(timestamp)s"
+
+#, python-format
+msgid "Your email has been changed from %(from_email)s to %(to_email)s."
+msgstr ""
+"Tu dirección de correo electrónico cambió de %(from_email)s a %(to_email)s."
+
+#, python-format
+msgid ""
+"You're receiving this email because user %(user_display)s has given your "
+"email address to register an account on %(site_domain)s."
+msgstr ""
+"Recibes este correo porque esta dirección de correo electrónico se indicó "
+"para la cuenta %(user_display)s en %(site_domain)s."
+
+#, python-format
+msgid "To confirm this is correct, go to %(activate_url)s"
+msgstr ""
+"Para confirmar esta dirección, abre el siguiente enlace: %(activate_url)s"
+
+msgid "Please Confirm Your Email Address"
+msgstr "Confirma tu dirección de correo electrónico"
+
+msgid "Your password has been changed."
+msgstr "Se cambió tu contraseña."
+
+msgid ""
+"You're receiving this email because you or someone else has requested a "
+"password reset for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+"Recibes este correo porque tú u otra persona solicitaron restablecer la "
+"contraseña de tu cuenta.\n"
+"Si no lo solicitaste, puedes ignorar este correo. Haz clic en el siguiente "
+"enlace para restablecer tu contraseña."
+
+msgid "Your password has been reset."
+msgstr "Se restableció tu contraseña."
+
+msgid "Your password has been set."
+msgstr "Se estableció tu contraseña."
+
+msgid "Password Set"
+msgstr "Contraseña establecida"
+
+msgid "Your email address is still pending verification."
+msgstr "Tu dirección de correo electrónico sigue pendiente de verificación."
+
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
+"address for user %(user_display)s."
+msgstr ""
+"Confirma que <a href=\"mailto:%(email)s\">%(email)s</a> es una dirección de "
+"correo electrónico de la cuenta %(user_display)s."
+
+#, python-format
+msgid ""
+"This email confirmation link expired or is invalid. Please <a "
+"href=\"%(email_url)s\">issue a new email confirmation request</a>."
+msgstr ""
+"Este enlace de confirmación expiró o no es válido. <a "
+"href=\"%(email_url)s\">Solicita un nuevo correo de confirmación</a>."
+
+msgid "Are you sure you want to sign out?"
+msgstr "¿Seguro que quieres cerrar sesión?"
+
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr "Confirmaste %(email)s."
+
+#, python-format
+msgid "Successfully signed in as %(name)s."
+msgstr "Iniciaste sesión como %(name)s."
+
+msgid "You have signed out."
+msgstr "Cerraste sesión."
+
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll send you "
+"an email allowing you to reset it."
+msgstr ""
+"¿Olvidaste tu contraseña? Escribe tu dirección de correo electrónico y te "
+"enviaremos un correo para restablecerla."
+
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+"Si tienes algún problema para restablecer tu contraseña, comunícate con el "
+"personal del sitio."
+
+msgid ""
+"We have sent you an email. If you have not received it please check your "
+"spam folder. Otherwise contact us if you do not receive it in a few minutes."
+msgstr ""
+"Te enviamos un correo electrónico. Si no lo encuentras, revisa la carpeta "
+"de correo no deseado. Si no lo recibes en unos minutos, comunícate con el "
+"personal del sitio."
+
+msgid "Bad Token"
+msgstr "Enlace no válido"
+
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password "
+"reset</a>."
+msgstr ""
+"El enlace para restablecer la contraseña no es válido, posiblemente porque "
+"ya se usó. <a href=\"%(passwd_reset_url)s\">Solicita un nuevo enlace</a>."
+
+msgid "Your password is now changed."
+msgstr "Se cambió tu contraseña."
+
+msgid "Enter your password:"
+msgstr "Escribe tu contraseña:"
+
+#, python-format
+msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
+msgstr "¿Ya tienes una cuenta? %(link)sInicia sesión%(end_link)s."
+
+msgid "Sign up using a passkey"
+msgstr "Crear una cuenta con una llave de acceso"
+
+msgid "Passkey Sign Up"
+msgstr "Crear una cuenta con una llave de acceso"
+
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+"El registro de cuentas nuevas no está disponible. Las cuentas las crea el "
+"personal del sitio."
+
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr "Ya iniciaste sesión como %(user_display)s."
+
+msgid ""
+"You currently do not have any email address set up. You should really add "
+"an email address so you can receive notifications, reset your password, etc."
+msgstr ""
+"Actualmente no tienes ninguna dirección de correo electrónico configurada. "
+"Deberías agregar una para recibir notificaciones, restablecer tu "
+"contraseña, etc."
+
+msgid "Verify Your Email Address"
+msgstr "Verifica tu dirección de correo electrónico"
+
+msgid ""
+"We have sent an email to you for verification. Follow the link provided to "
+"finalize the signup process. If you do not see the verification email in "
+"your main inbox, check your spam folder. Please contact us if you do not "
+"receive the verification email within a few minutes."
+msgstr ""
+"Te enviamos un correo electrónico de verificación. Abre el enlace que "
+"contiene para terminar el proceso. Si no lo encuentras en tu bandeja de "
+"entrada, revisa la carpeta de correo no deseado. Si no lo recibes en unos "
+"minutos, comunícate con el personal del sitio."
+
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your email address. "
+msgstr ""
+"Esta parte del sitio requiere que verifiquemos que\n"
+"eres quien dices ser. Para ello, necesitamos que\n"
+"verifiques que la dirección de correo electrónico es tuya. "
+
+msgid ""
+"We have sent an email to you for\n"
+"verification. Please click on the link inside that email. If you do not see "
+"the verification email in your main inbox, check your spam folder. "
+"Otherwise\n"
+"contact us if you do not receive it within a few minutes."
+msgstr ""
+"Te enviamos un correo electrónico de\n"
+"verificación. Haz clic en el enlace que contiene. Si no lo encuentras en tu "
+"bandeja de entrada, revisa la carpeta de correo no deseado. Si no lo "
+"recibes\n"
+"en unos minutos, comunícate con el personal del sitio."
+
+msgid "Two-Factor Authentication"
+msgstr "Autenticación de dos factores"
+
+msgid ""
+"Your account is protected by two-factor authentication. Please enter an "
+"authenticator code:"
+msgstr ""
+"Tu cuenta está protegida con la autenticación de dos factores. Escribe un "
+"código de autenticación:"
+
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated."
+msgstr ""
+"Se generó un nuevo conjunto de códigos de recuperación de la autenticación "
+"de dos factores."
+
+msgid "New Recovery Codes Generated"
+msgstr "Se generaron nuevos códigos de recuperación"
+
+msgid "A new security key has been added."
+msgstr "Se agregó una llave de seguridad nueva."
+
+msgid "Security Key Added"
+msgstr "Llave de seguridad agregada"
+
+msgid "A security key has been removed."
+msgstr "Se eliminó una llave de seguridad."
+
+msgid "Security Key Removed"
+msgstr "Llave de seguridad eliminada"
+
+msgid "Security Keys"
+msgstr "Llaves de seguridad"
+
+#, python-format
+msgid "You have added %(count)s security key."
+msgid_plural "You have added %(count)s security keys."
+msgstr[0] "Tienes %(count)s llave de seguridad."
+msgstr[1] "Tienes %(count)s llaves de seguridad."
+
+msgid "No security keys have been added."
+msgstr "No hay llaves de seguridad registradas."
+
+#, python-format
+msgid ""
+"There is %(unused_count)s out of %(total_count)s recovery codes available."
+msgid_plural ""
+"There are %(unused_count)s out of %(total_count)s recovery codes available."
+msgstr[0] ""
+"Hay %(unused_count)s código de recuperación disponible de %(total_count)s."
+msgstr[1] ""
+"Hay %(unused_count)s códigos de recuperación disponibles de %(total_count)s."
+
+msgid "No recovery codes set up."
+msgstr ""
+"No hay códigos de recuperación. Se crean al activar la aplicación de "
+"autenticación."
+
+msgid "Generate"
+msgstr "Crear nuevos códigos"
+
+msgid "Security key added."
+msgstr "Llave de seguridad agregada."
+
+msgid "Security key removed."
+msgstr "Llave de seguridad eliminada."
+
+msgid "Enter an authenticator code:"
+msgstr "Escribe un código de autenticación:"
+
+msgid "You are about to generate a new set of recovery codes for your account."
+msgstr ""
+"Estás a punto de crear un nuevo conjunto de códigos de recuperación para tu "
+"cuenta."
+
+msgid "This action will invalidate your existing codes."
+msgstr "Esta acción invalidará tus códigos actuales."
+
+msgid ""
+"To protect your account with two-factor authentication, scan the QR code "
+"below with your authenticator app. Then, input the verification code "
+"generated by the app below."
+msgstr ""
+"Para proteger tu cuenta con la autenticación de dos factores, escanea el "
+"siguiente código QR con tu aplicación de autenticación. Después, escribe "
+"abajo el código de verificación que genera la aplicación."
+
+msgid "Authenticator secret"
+msgstr "Clave secreta"
+
+msgid ""
+"You can store this secret and use it to reinstall your authenticator app at "
+"a later time."
+msgstr ""
+"Puedes guardar esta clave secreta y usarla más adelante para configurar de "
+"nuevo tu aplicación de autenticación."
+
+msgid "Deactivate Authenticator App"
+msgstr "Desactivar la aplicación de autenticación"
+
+msgid ""
+"You are about to deactivate authenticator app based authentication. Are you "
+"sure?"
+msgstr ""
+"Estás a punto de desactivar la autenticación con la aplicación de "
+"autenticación. ¿Quieres continuar?"
+
+msgid "Add Security Key"
+msgstr "Agregar una llave de seguridad"
+
+msgid "Remove Security Key"
+msgstr "Eliminar la llave de seguridad"
+
+msgid "Are you sure you want to remove this security key?"
+msgstr "¿Seguro que quieres eliminar esta llave de seguridad?"
+
+msgid "Security key"
+msgstr "Llave de seguridad"
+
+msgid "Passkey"
+msgstr "Llave de acceso"
+
+msgid "This key does not indicate whether it is a passkey."
+msgstr "Esta llave no indica si es una llave de acceso."
+
+#, python-format
+msgid "Added on %(created_at)s"
+msgstr "Agregada el %(created_at)s"
+
+msgid "Edit Security Key"
+msgstr "Editar la llave de seguridad"
+
+msgid "Create Passkey"
+msgstr "Crear una llave de acceso"
+
+msgid ""
+"You are about to create a passkey for your account. As you can add "
+"additional keys later on, you can use a descriptive name to tell the keys "
+"apart."
+msgstr ""
+"Estás a punto de crear una llave de acceso para tu cuenta. Como puedes "
+"agregar más llaves después, conviene darle un nombre descriptivo para "
+"distinguirlas."

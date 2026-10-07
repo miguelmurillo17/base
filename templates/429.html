@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Demasiados intentos" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Demasiados intentos" %}</h1>
+    <p>
+        {% blocktranslate trimmed %}
+            Se alcanzó el límite de intentos permitidos. Espera unos minutos antes de volver a
+            intentarlo.
+        {% endblocktranslate %}
+    </p>
+{% endblock contenido %}

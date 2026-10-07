@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% comment %}
+Reemplaza la plantilla base de django-allauth para que sus páginas usen la del proyecto.
+Los bloques de django-allauth se anidan dentro de los del proyecto; algunas páginas ponen
+sus scripts en content y otras en extra_body, así que se muestran los dos.
+{% endcomment %}
+{% block titulo %}{% block head_title %}{% endblock head_title %}{% endblock titulo %}
+{% block cabecera %}{% block extra_head %}{% endblock extra_head %}{% endblock cabecera %}
+{% block contenido %}
+    {% block body %}{% block content %}{% endblock content %}{% endblock body %}
+{% endblock contenido %}
+{% block scripts %}{% block extra_body %}{% endblock extra_body %}{% endblock scripts %}

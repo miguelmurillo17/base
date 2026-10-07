@@ -1,0 +1,54 @@
+{% load allauth %}
+{% comment %}
+Campo individual de django-allauth con el mismo marcado que formularios/campo.html. Cuando
+tiene errores, el campo los anuncia con aria-invalid y aria-describedby.
+{% endcomment %}
+{% if attrs.type == "checkbox" or attrs.type == "radio" %}
+    <div class="campo campo--casilla{% if attrs.errors %} campo--con-error{% endif %}">
+        <input
+            type="{{ attrs.type }}"
+            {% if attrs.required %}required{% endif %}
+            {% if attrs.disabled %}disabled{% endif %}
+            {% if attrs.readonly %}readonly{% endif %}
+            {% if attrs.checked %}checked{% endif %}
+            {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+            {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+            {% if attrs.value is not None %}value="{{ attrs.value }}"{% endif %}>
+        <label for="{{ attrs.id }}">{% slot label %}{% endslot %}</label>
+{% else %}
+    <div class="campo{% if attrs.errors %} campo--con-error{% endif %}">
+        <label for="{{ attrs.id }}">{% slot label %}{% endslot %}</label>
+        {% if attrs.type == "textarea" %}
+            <textarea
+                {% if attrs.required %}required{% endif %}
+                {% if attrs.rows %}rows="{{ attrs.rows }}"{% endif %}
+                {% if attrs.disabled %}disabled{% endif %}
+                {% if attrs.readonly %}readonly{% endif %}
+                {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+                {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+                {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
+                {% if attrs.errors %}aria-invalid="true"{% endif %}
+                {% if attrs.errors %}aria-describedby="{{ attrs.id }}_error"{% endif %}
+            >{% slot value %}{% endslot %}</textarea>
+        {% else %}
+            <input
+                type="{{ attrs.type }}"
+                {% if attrs.required %}required{% endif %}
+                {% if attrs.disabled %}disabled{% endif %}
+                {% if attrs.readonly %}readonly{% endif %}
+                {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+                {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+                {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
+                {% if attrs.autocomplete %}autocomplete="{{ attrs.autocomplete }}"{% endif %}
+                {% if attrs.value is not None %}value="{{ attrs.value }}"{% endif %}
+                {% if attrs.errors %}aria-invalid="true"{% endif %}
+                {% if attrs.errors %}aria-describedby="{{ attrs.id }}_error"{% endif %}>
+        {% endif %}
+{% endif %}
+        {% if slots.help_text %}
+            <div class="campo__ayuda">{% slot help_text %}{% endslot %}</div>
+        {% endif %}
+        {% if attrs.errors %}
+            <div class="campo__errores" id="{{ attrs.id }}_error">{{ attrs.errors }}</div>
+        {% endif %}
+    </div>

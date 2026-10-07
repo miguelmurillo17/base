@@ -1,0 +1,16 @@
+{% extends "account/email/base_message.txt" %}
+{% comment %}
+Correo para una dirección sin cuenta. Reemplaza el de django-allauth para incluir el enlace
+de registro solo cuando el registro está abierto.
+{% endcomment %}
+{% load i18n %}
+{% block content %}{% autoescape off %}{% blocktranslate trimmed %}
+    Recibes este correo porque tú u otra persona intentaron acceder a una cuenta con la
+    dirección {{ email }}, pero no existe ninguna cuenta con esa dirección.
+{% endblocktranslate %}
+
+{% translate "Si no fuiste tú, puedes ignorar este correo." %}{% if registro_abierto %}
+
+{% translate "Si fuiste tú, puedes crear una cuenta en:" %}
+
+{{ signup_url }}{% endif %}{% endautoescape %}{% endblock content %}

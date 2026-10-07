@@ -1,0 +1,24 @@
+# Servicios de apoyo para el desarrollo local. Los valores se toman del archivo .env.
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?falta POSTGRES_DB en .env}
+      POSTGRES_USER: ${POSTGRES_USER:?falta POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en .env}
+    ports:
+      # Solo accesible desde el propio equipo.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # Desde PostgreSQL 18 la imagen guarda los datos bajo /var/lib/postgresql/18.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      # Por TCP: durante la inicialización, el servidor temporal solo escucha en el socket
+      # local y responder ahí no significa que el servidor definitivo esté listo.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

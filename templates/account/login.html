@@ -1,0 +1,41 @@
+{% extends "account/base_entrance.html" %}
+{% comment %}
+Página de inicio de sesión. Reemplaza la de django-allauth para mostrar el enlace de
+registro solo cuando el registro está abierto.
+{% endcomment %}
+{% load i18n allauth %}
+{% block head_title %}{% translate "Iniciar sesión" %}{% endblock head_title %}
+{% block content %}
+    {% element h1 %}{% translate "Iniciar sesión" %}{% endelement %}
+    {% if registro_abierto %}
+        <p>
+            {% translate "¿Todavía no tienes una cuenta?" %}
+            <a href="{{ signup_url }}">{% translate "Crear una cuenta" %}</a>
+        </p>
+    {% endif %}
+    {% url "account_login" as url_inicio_sesion %}
+    {% element form form=form method="post" action=url_inicio_sesion tags="entrance,login" %}
+        {% slot body %}
+            {% csrf_token %}
+            {% element fields form=form %}{% endelement %}
+            {{ redirect_field }}
+        {% endslot %}
+        {% slot actions %}
+            {% element button type="submit" tags="prominent,login" %}
+                {% translate "Iniciar sesión" %}
+            {% endelement %}
+        {% endslot %}
+    {% endelement %}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% element hr %}{% endelement %}
+        {% element button type="submit" form="mfa_login" id="passkey_login" tags="login,outline" %}
+            {% translate "Iniciar sesión con una llave de acceso" %}
+        {% endelement %}
+    {% endif %}
+{% endblock content %}
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock extra_body %}

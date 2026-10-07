@@ -1,0 +1,23 @@
+{% load i18n %}
+{% comment %}
+Plantilla común de formularios (config/formularios.py). Al inicio se muestran los errores
+generales y los de campos ocultos y, si varios campos tienen errores, un resumen con un
+enlace a cada uno. Cada campo se muestra con formularios/campo.html.
+{% endcomment %}
+{% if errors or form.errors|length > 1 %}
+    <div class="formulario__errores" role="alert">
+        {% if form.errors|length > 1 %}
+            <p>{% translate "Revisa los campos marcados:" %}</p>
+            <ul>
+                {% for campo, errores_campo in fields %}
+                    {% if errores_campo %}
+                        <li><a href="#{{ campo.auto_id }}">{{ campo.label }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {{ errors }}
+    </div>
+{% endif %}
+{% for campo, errores_campo in fields %}{{ campo.as_field_group }}{% endfor %}
+{% for campo in hidden_fields %}{{ campo }}{% endfor %}

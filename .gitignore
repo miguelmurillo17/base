@@ -1,0 +1,45 @@
+# Entorno virtual y variables de entorno locales
+.venv/
+.venv-versiones/
+.env
+.env.*
+!.env.example
+.envrc
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django: archivos generados y subidos
+/staticfiles/
+/media/
+*.sqlite3
+*.log
+
+# Respaldos de base de datos y claves locales
+*.dump
+*.backup
+/*.sql
+*.pem
+*.key
+
+# Archivos locales de Claude Code: configuración personal, copias de trabajo y vista previa
+.claude/settings.local.json
+.claude/worktrees/
+.claude/launch.json
+CLAUDE.local.md
+
+# Editores y sistema operativo
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Dependencias de frontend
+node_modules/

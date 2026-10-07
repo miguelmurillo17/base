@@ -1,0 +1,9 @@
+{% comment %}
+Base de los correos de texto plano de django-allauth. El escapado automático se desactiva
+porque el texto no es HTML, igual que en las plantillas de django-allauth que la extienden.
+{% endcomment %}{% autoescape off %}{% block content %}{% endblock content %}
+
+--
+{{ nombre_sitio }}
+{{ current_site.domain }}
+{% endautoescape %}

@@ -1,0 +1,11 @@
+{% load allauth elementos %}
+{% comment %}
+Estado como texto con un indicador pequeño en el color semántico, sin forma de píldora
+(ver docs/lineamientos/diseno-de-interfaz.md).
+{% endcomment %}
+{% with variante=attrs.tags|clase_estado %}
+    <span class="estado{% if variante %} {{ variante }}{% endif %}"
+          {% if attrs.title %}title="{{ attrs.title }}"{% endif %}>
+        {% slot %}{% endslot %}
+    </span>
+{% endwith %}
