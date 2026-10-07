@@ -1,6 +1,9 @@
-"""Pruebas de la configuración: política de seguridad de contenido, lectura de variables de
-entorno, ajustes y rutas de cuentas, filtro de informes de errores, servidor de correo de
-desarrollo y traducciones propias."""
+"""Pruebas de la configuración: política de seguridad de contenido, sesión obligatoria por
+defecto, páginas de error, lectura de variables de entorno, ajustes y rutas de cuentas,
+filtro de informes de errores, servidor de correo de desarrollo y traducciones propias.
+
+Este módulo también sirve como ``ROOT_URLCONF`` de las pruebas que necesitan vistas propias.
+"""
 
 import ast
 import os
@@ -13,9 +16,12 @@ from unittest import mock
 import allauth
 import django
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.auth.decorators import login_not_required
 from django.core.mail import EmailMessage
-from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
-from django.urls import reverse
+from django.http import HttpResponse
+from django.template import loader
+from django.test import Client, RequestFactory, SimpleTestCase, TestCase, override_settings
+from django.urls import include, path, reverse
 
 from config.correo import ServidorCorreoConsola
 from config.entorno import entorno_booleano, entorno_lista, entorno_opcion
@@ -25,6 +31,7 @@ DIRECTORIO_CONFIGURACION = Path(__file__).resolve().parent
 AJUSTES_BASE = DIRECTORIO_CONFIGURACION / "settings" / "base.py"
 RUTAS = DIRECTORIO_CONFIGURACION / "urls.py"
 CATALOGO_PROPIO = DIRECTORIO_CONFIGURACION.parent / "locale" / "es_MX" / "LC_MESSAGES" / "django.po"
+DETALLE_INTERNO = "detalle-interno-de-la-excepcion"
 VARIABLES_CUENTAS = (
     "CUENTAS_REGISTRO_ABIERTO",
     "CUENTAS_VERIFICACION_CORREO",
@@ -70,6 +77,23 @@ def leer_msgids(ruta: Path) -> set[str]:
     return msgids
 
 
+def responder(request):
+    return HttpResponse("contenido")
+
+
+@login_not_required
+def fallar(request):
+    raise RuntimeError(DETALLE_INTERNO)
+
+
+urlpatterns = [
+    path("", responder, name="inicio"),
+    path("sin-decorador/", responder),
+    path("fallar/", fallar),
+    path("cuentas/", include("allauth.account.urls")),
+]
+
+
 class PruebasPoliticaContenido(TestCase):
     def test_respuestas_incluyen_politica_de_seguridad_de_contenido(self):
         respuesta = self.client.get(reverse("account_login"))
@@ -77,6 +101,39 @@ class PruebasPoliticaContenido(TestCase):
         politica = respuesta.headers["Content-Security-Policy"]
         self.assertIn("default-src 'self'", politica)
         self.assertIn("frame-ancestors 'none'", politica)
+
+
+@override_settings(ROOT_URLCONF=__name__)
+class PruebasSesionObligatoria(TestCase):
+    def test_vista_sin_decorador_exige_sesion(self):
+        respuesta = self.client.get("/sin-decorador/")
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertTrue(respuesta["Location"].startswith(reverse("account_login")))
+
+
+@override_settings(ROOT_URLCONF=__name__)
+class PruebasPaginasError(TestCase):
+    def test_error_del_servidor_no_muestra_detalles(self):
+        cliente = Client(raise_request_exception=False)
+        with self.assertLogs("django.request", "ERROR"):
+            respuesta = cliente.get("/fallar/")
+        self.assertEqual(respuesta.status_code, 500)
+        self.assertContains(respuesta, "Error del servidor", status_code=500)
+        self.assertNotContains(respuesta, DETALLE_INTERNO, status_code=500)
+        self.assertNotContains(respuesta, "Traceback", status_code=500)
+
+    def test_pagina_inexistente_usa_la_pagina_propia(self):
+        with self.assertLogs("django.request", "WARNING"):
+            respuesta = self.client.get("/no-existe/")
+        self.assertContains(respuesta, "Página no encontrada", status_code=404)
+
+
+class PruebasPlantillasErrorSinContexto(SimpleTestCase):
+    def test_paginas_400_y_500_se_generan_sin_peticion(self):
+        # Django las genera sin la petición ni los procesadores de contexto.
+        for plantilla, titulo in [("400.html", "Solicitud no válida"), ("500.html", "Error")]:
+            with self.subTest(plantilla=plantilla):
+                self.assertIn(titulo, loader.get_template(plantilla).render())
 
 
 class PruebasEntorno(SimpleTestCase):

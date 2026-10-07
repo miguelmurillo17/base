@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Página no encontrada" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Página no encontrada" %}</h1>
+    <p>
+        {% blocktranslate trimmed %}
+            La dirección no corresponde a ninguna página. Revisa que esté bien escrita o
+            vuelve a la página de inicio.
+        {% endblocktranslate %}
+    </p>
+    <p><a href="{% url 'inicio' %}">{% translate "Ir a la página de inicio" %}</a></p>
+{% endblock contenido %}

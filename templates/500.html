@@ -1,0 +1,13 @@
+{% extends "error_sin_contexto.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Error del servidor" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Error del servidor" %}</h1>
+    <p>
+        {% blocktranslate trimmed %}
+            Ocurrió un error inesperado y no se completó la operación. Intenta de nuevo en
+            unos minutos; si el problema continúa, avisa a la persona que administra el
+            sitio.
+        {% endblocktranslate %}
+    </p>
+{% endblock contenido %}

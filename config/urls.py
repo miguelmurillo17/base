@@ -1,17 +1,16 @@
-"""Rutas principales del proyecto."""
+"""Rutas principales del proyecto.
+
+``LoginRequiredMiddleware`` exige sesión iniciada en todas las rutas; las públicas, como las
+de django-allauth, se marcan con ``@login_not_required``.
+"""
 
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path(
-        "",
-        login_required(TemplateView.as_view(template_name="inicio.html")),
-        name="inicio",
-    ),
+    path("", TemplateView.as_view(template_name="inicio.html"), name="inicio"),
     path("admin/", admin.site.urls),
     path("cuentas/", include("allauth.account.urls")),
 ]

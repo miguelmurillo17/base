@@ -1,0 +1,20 @@
+{% comment %}
+Base de las páginas de error 400 y 500. Django las genera sin la petición, así que no
+cuentan con los procesadores de contexto (nombre del sitio, usuario, mensajes) ni con el
+nonce de la política de seguridad de contenido, y no extienden base.html.
+{% endcomment %}{% load i18n static %}<!doctype html>
+{% get_current_language as idioma %}
+<html lang="{{ idioma }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}{% endblock titulo %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    <main class="contenedor principal">
+        {% block contenido %}{% endblock contenido %}
+        <p><a href="{% url 'inicio' %}">{% translate "Ir a la página de inicio" %}</a></p>
+    </main>
+</body>
+</html>

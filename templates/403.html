@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Acceso no permitido" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Acceso no permitido" %}</h1>
+    <p>
+        {% blocktranslate trimmed %}
+            Tu cuenta no tiene permiso para ver esta página. Si necesitas acceso, solicítalo
+            a la persona que administra el sitio.
+        {% endblocktranslate %}
+    </p>
+    <p><a href="{% url 'inicio' %}">{% translate "Ir a la página de inicio" %}</a></p>
+{% endblock contenido %}

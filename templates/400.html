@@ -1,0 +1,12 @@
+{% extends "error_sin_contexto.html" %}
+{% load i18n %}
+{% block titulo %}{% translate "Solicitud no válida" %}{% endblock titulo %}
+{% block contenido %}
+    <h1>{% translate "Solicitud no válida" %}</h1>
+    <p>
+        {% blocktranslate trimmed %}
+            No se pudo procesar la solicitud. Vuelve a la página anterior e inténtalo de
+            nuevo.
+        {% endblocktranslate %}
+    </p>
+{% endblock contenido %}

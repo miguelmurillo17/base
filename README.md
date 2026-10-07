@@ -83,6 +83,12 @@ El sitio de administración no tiene un inicio de sesión propio: redirige al de
 aplica la verificación del correo, los límites de intentos y el segundo factor. El cambio
 de contraseña también pasa por las pantallas de la cuenta.
 
+Toda página exige sesión iniciada salvo las de inicio de sesión, registro y recuperación de
+la cuenta. Los inicios y cierres de sesión, los intentos fallidos, los cambios de
+contraseña y de correo y los cambios en la autenticación de dos factores quedan en el
+registro `apps.cuentas.auditoria`, con la clave del usuario y la dirección IP, sin el
+correo ni las credenciales.
+
 Con la autenticación de dos factores activa, django-allauth no permite cambiar el correo
 mientras la verificación se haga por enlace. Para cambiarlo se desactiva la aplicación de
 autenticación, se cambia y verifica el correo, y se vuelve a activar; el personal no puede
@@ -131,7 +137,7 @@ Remove-Item Env:DJANGO_ALLOWED_HOSTS, Env:DJANGO_SMTP_HOST, Env:DJANGO_DEFAULT_F
 
 ```text
 apps/                 Aplicaciones de Django del proyecto
-  cuentas/            Modelo de usuario con inicio de sesión por correo y django-allauth
+  cuentas/            Modelo de usuario, django-allauth y registro de auditoría
 config/               Configuración del proyecto
   settings/           base.py (común), dev.py (desarrollo), prod.py (producción)
   entorno.py          Lectura de variables de entorno
@@ -139,7 +145,7 @@ config/               Configuración del proyecto
 docs/lineamientos/    Convenciones del proyecto
 locale/               Traducciones propias, con prioridad sobre las de las bibliotecas
 static/               Hoja de estilos base
-templates/            Plantilla base, formularios y pantallas de django-allauth
+templates/            Plantilla base, formularios, páginas de error y pantallas de django-allauth
 scripts/              Utilidades de mantenimiento
 compose.yaml          PostgreSQL para desarrollo
 pyproject.toml        Dependencias directas y metadatos
