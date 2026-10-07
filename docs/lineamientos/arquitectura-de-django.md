@@ -87,9 +87,11 @@ terceros cuando no hay otro punto de extensión.
 - Las vistas basadas en clases se nombran `Vista<Operación><Entidad>`
   (`VistaListaFacturas`, `VistaEditarFactura`) y las funciones, con la operación en
   infinitivo (`timbrar_factura`).
-- Toda vista exige sesión iniciada y el permiso que corresponde a la operación, con
-  `LoginRequiredMixin` y `PermissionRequiredMixin` o sus decoradores equivalentes. Una vista
-  pública lo es por decisión explícita y su docstring lo indica.
+- Toda vista exige sesión iniciada: `LoginRequiredMiddleware` la exige por defecto, sin que
+  la vista lo declare. Una vista pública lo es por decisión explícita, se marca con
+  `@login_not_required` y su docstring lo indica.
+- Toda vista exige además el permiso que corresponde a la operación, con
+  `PermissionRequiredMixin` o `@permission_required`.
 - Una petición `GET` nunca modifica datos. Una petición `POST` que termina bien redirige a
   otra página y deja un mensaje con el framework de mensajes de Django.
 - Las listas se paginan.

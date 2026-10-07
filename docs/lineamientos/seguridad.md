@@ -4,19 +4,51 @@ Reglas que se aplican a todo el código. Las de credenciales y datos privados en
 repositorio están en [`CLAUDE.md`](../../CLAUDE.md) y en
 [Autoría y redacción](autoria-y-redaccion.md).
 
+Las medidas se aplican con los mismos mecanismos en desarrollo y en producción, para que
+cualquier problema aparezca antes del despliegue. Entre entornos solo cambian los valores,
+como `DEBUG` o los ajustes que dependen de HTTPS, que están en `config/settings/prod.py`.
+
 ## Acceso
 
-- Toda vista exige sesión iniciada y el permiso de la operación, salvo las declaradas
-  públicas de forma explícita (ver [Arquitectura de Django](arquitectura-de-django.md)).
-- Los permisos se comprueban en el servidor, en cada vista. Ocultar un botón o un enlace no
-  es una medida de acceso.
+- Toda vista exige sesión iniciada: `LoginRequiredMiddleware` la exige por defecto, de modo
+  que una vista nueva queda protegida aunque no lo declare. Las vistas públicas se marcan
+  con `@login_not_required` (ver [Arquitectura de Django](arquitectura-de-django.md)).
+- Toda vista exige además el permiso de la operación. Los permisos se comprueban en el
+  servidor, en cada vista, tanto al mostrar una pantalla como al procesar el `POST` que la
+  envía. Ocultar un botón o un enlace no es una medida de acceso.
 - Cuando los registros pertenecen a una persona u organización, la vista obtiene el registro
   desde una consulta ya filtrada por ese propietario
   (`get_object_or_404(Factura.objects.filter(cliente=...), pk=pk)`), nunca solo por su clave
   primaria. Si el registro no le pertenece, la respuesta es 404, para no revelar que existe.
 - El sitio de administración se reserva al personal técnico y usa el mismo inicio de sesión
   que el resto del sitio, de modo que no evita el segundo factor de autenticación.
+- Las herramientas de diagnóstico, como barras de depuración o perfiladores, se instalan y
+  se enrutan solo en `config/settings/dev.py`. Un punto de entrada para comprobar que el
+  servicio está en marcha no revela versiones, configuración ni datos.
 
+## Secretos
+
+- Las claves de API, contraseñas y tokens solo existen en el servidor y se leen de variables
+  de entorno. El navegador nunca recibe una clave: cuando la interfaz necesita un servicio
+  externo, como un modelo de IA, llama a una vista de Django y es el servidor el que llama
+  al servicio.
+- Ningún secreto va en archivos estáticos, en plantillas ni en las variables que se
+  incorporan al compilar el código de cliente, porque todo eso llega al navegador.
+- Los archivos `.env` no se versionan; solo `.env.example`, con valores ficticios. En la
+  plataforma que aloja el repositorio se activa el escaneo de secretos, que rechaza los
+  envíos con claves reconocibles.
+
+## Límites de intentos
+
+- Los límites de intentos de django-allauth (inicio de sesión, registro, restablecimiento de
+  contraseña, códigos de verificación y reenvío de correos) se mantienen activos en todos
+  los entornos. Las pruebas que los necesitan distintos los ajustan con
+  `override_settings`.
+- Las vistas que consumen un servicio externo con costo, como un modelo de IA, o que hacen
+  operaciones costosas limitan el número de peticiones por usuario. El conteo se guarda en
+  la caché compartida del proyecto, y al exceder el límite la respuesta es 429.
+- El límite general de peticiones por dirección IP se aplica en el proxy inverso de
+  producción, no en Django.
 ## Datos de entrada
 
 - Todo dato que llega de la petición (formularios, parámetros de la URL, encabezados, campos
@@ -60,6 +92,18 @@ consecuencia:
 
 ## Base de datos
 
+- PostgreSQL no es accesible desde internet: en desarrollo solo escucha en el propio
+  equipo y en producción solo en la red privada del servicio.
+- La aplicación se conecta con un rol propietario de su base de datos, sin los privilegios
+  `SUPERUSER`, `CREATEDB` ni `CREATEROLE`.
+- Los datos solo se exponen a través de vistas que comprueban sesión y permisos. No se
+  publican interfaces generadas automáticamente sobre las tablas; si un proyecto agrega una
+  API, su permiso por defecto exige sesión iniciada. Un modelo aparece en el sitio de
+  administración solo si se registra de forma explícita.
+- No se usa la seguridad por filas de PostgreSQL (RLS): el navegador nunca consulta la base
+  de datos, y el aislamiento entre propietarios se garantiza con consultas filtradas en
+  cada vista. Un proyecto que comparte la base de datos entre organizaciones con
+  requisitos estrictos de aislamiento puede adoptarla como decisión propia.
 - Sin SQL construido con interpolación de cadenas; ver [Modelos y datos](modelos-y-datos.md).
 - Los respaldos y volcados de bases de datos no se versionan ni se comparten fuera de los
   canales del proyecto.
@@ -69,7 +113,24 @@ consecuencia:
 - Los registros no incluyen contraseñas, tokens, claves, datos de pago ni datos personales
   completos.
 - Las páginas de error que ve una persona usuaria no muestran detalles técnicos. `DEBUG`
-  solo está activo en `config/settings/dev.py`.
+  solo está activo en `config/settings/dev.py`, y las páginas 400, 403, 404 y 500 son
+  plantillas propias del proyecto.
+- El texto de una excepción no se muestra en mensajes, páginas ni respuestas JSON: se
+  registra, y la persona recibe un mensaje que explica qué hacer.
+
+## Registro de auditoría
+
+- Los eventos de seguridad de las cuentas se registran en `apps/cuentas/auditoria.py`:
+  inicios y cierres de sesión, intentos fallidos, códigos de verificación rechazados,
+  cambios de contraseña y de correo, y cambios en la autenticación de dos factores. Las
+  acciones del sitio de administración quedan en su propio historial.
+- Cada registro identifica a la persona por la clave primaria de su usuario y a la
+  petición por su dirección IP. Nunca incluye el correo ni las credenciales recibidas.
+- Un evento de seguridad nuevo, como un cambio de permisos fuera del sitio de
+  administración, se registra en ese mismo módulo.
+- En producción, los registros se conservan en el sistema que recoge la salida del
+  servicio durante el plazo que fije la política de privacidad del proyecto, porque la
+  dirección IP es un dato personal.
 
 ## Configuración y dependencias
 
