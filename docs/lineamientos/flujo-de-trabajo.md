@@ -52,14 +52,15 @@ En el mismo cambio se actualiza:
 Un cambio se da por terminado cuando, con PostgreSQL en ejecución, se cumple todo lo
 siguiente:
 
-1. `python manage.py test` termina sin fallos.
-2. `python manage.py check` no informa problemas.
-3. `python manage.py makemigrations --check --dry-run` no detecta migraciones pendientes.
-4. Si el cambio toca ajustes de seguridad o de producción, la revisión `check --deploy`
+1. `python -m ruff check .` y `python -m ruff format --check .` no informan problemas.
+2. `python manage.py test` termina sin fallos.
+3. `python manage.py check` no informa problemas.
+4. `python manage.py makemigrations --check --dry-run` no detecta migraciones pendientes.
+5. Si el cambio toca ajustes de seguridad o de producción, la revisión `check --deploy`
    indicada en `CLAUDE.md` termina sin advertencias.
-5. Si el cambio incluye pantallas, cumple la lista de revisión de
+6. Si el cambio incluye pantallas, cumple la lista de revisión de
    [Diseño de interfaz](diseno-de-interfaz.md).
-6. Los textos nuevos cumplen [Autoría y redacción](autoria-y-redaccion.md): sin marcas de
+7. Los textos nuevos cumplen [Autoría y redacción](autoria-y-redaccion.md): sin marcas de
    autoría de herramientas, sin emojis y sin referencias al proceso.
 
 Si algún paso no puede ejecutarse, se indica cuál y por qué al entregar el cambio, en lugar

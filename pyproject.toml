@@ -22,4 +22,41 @@ prod = [
 ]
 dev = [
     {include-group = "prod"},
+    # Las versiones menores de Ruff pueden agregar reglas o cambiar el formato; el cambio
+    # de serie se hace de forma explícita.
+    "ruff>=0.16.10,<0.17",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+# Las migraciones se versionan tal como las genera Django.
+extend-exclude = ["**/migrations/*"]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle: errores
+    "W",     # pycodestyle: advertencias, incluido el largo de comentarios y docstrings
+    "F",     # Pyflakes: nombres sin definir, importaciones sin usar
+    "I",     # orden y grupos de importaciones
+    "UP",    # sintaxis actual de Python
+    "B",     # errores probables
+    "C4",    # comprensiones innecesarias
+    "BLE",   # except Exception que oculta errores
+    "DTZ",   # fechas y horas sin zona horaria
+    "G",     # mensajes de registro construidos antes de saber si el nivel está activo
+    "T20",   # print
+    "ERA",   # código comentado
+    "DJ",    # convenciones de Django
+]
+
+[tool.ruff.lint.pycodestyle]
+# Los lineamientos piden cortar alrededor de 90 caracteres; el límite estricto deja margen.
+max-doc-length = 95
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config", "scripts"]
+
+[tool.ruff.lint.per-file-ignores]
+# Los módulos de config/settings/ extienden base.py con import *.
+"config/settings/*.py" = ["F403", "F405"]

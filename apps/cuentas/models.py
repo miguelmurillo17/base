@@ -54,7 +54,7 @@ class GestorUsuarios(BaseUserManager):
         correo: str,
         password: str | None,
         **campos_extra: object,
-    ) -> "Usuario":
+    ) -> Usuario:
         if not correo:
             raise ValueError("El correo electrónico es obligatorio.")
         usuario = self.model(correo=self.normalize_email(correo), **campos_extra)

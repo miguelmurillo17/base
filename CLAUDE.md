@@ -47,11 +47,13 @@ sección se reemplaza por la descripción de ese proyecto; el resto del archivo 
 - Traducciones propias en `locale/es_MX/`: después de editar el `.po` se compila con
   `python manage.py compilemessages --locale es_MX --ignore ".venv*"` (en Windows, desde la
   consola Bash de Git, que incluye `msgfmt`) y se versionan el `.po` y el `.mo`.
+- Código: `python -m ruff check .` y `python -m ruff format .`, con la configuración de
+  `pyproject.toml`.
 - Dependencias: se editan en `pyproject.toml` y se regeneran las versiones exactas con
   `python scripts/fijar_versiones.py`. `requirements*.txt` no se editan a mano.
 - Antes de dar un cambio por terminado se completa la verificación descrita en
-  [Flujo de trabajo](docs/lineamientos/flujo-de-trabajo.md): pruebas, `manage.py check` y
-  ausencia de migraciones pendientes, como mínimo.
+  [Flujo de trabajo](docs/lineamientos/flujo-de-trabajo.md): Ruff, pruebas,
+  `manage.py check` y ausencia de migraciones pendientes, como mínimo.
 
 ## Lineamientos
 

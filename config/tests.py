@@ -15,8 +15,8 @@ from unittest import mock
 
 import allauth
 import django
-from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.decorators import login_not_required
+from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template import loader
@@ -47,7 +47,7 @@ def cargar_ajustes_base(**variables: str) -> dict[str, object]:
     Las variables ``CUENTAS_*`` que no se indican quedan vacías, es decir, con su valor por
     defecto, sin importar lo que contenga el archivo .env.
     """
-    entorno_prueba = {nombre: "" for nombre in VARIABLES_CUENTAS} | variables
+    entorno_prueba = dict.fromkeys(VARIABLES_CUENTAS, "") | variables
     with mock.patch.dict(os.environ, entorno_prueba):
         return runpy.run_path(str(AJUSTES_BASE))
 

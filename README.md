@@ -101,6 +101,8 @@ Con el entorno virtual activado:
 | Tarea | Comando |
 |---|---|
 | Ejecutar las pruebas | `python manage.py test` |
+| Revisar el código con Ruff | `python -m ruff check .` |
+| Aplicar el formato de Ruff | `python -m ruff format .` |
 | Regenerar las versiones exactas de las dependencias | `python scripts/fijar_versiones.py` |
 | Compilar las traducciones propias de `locale/` | `python manage.py compilemessages --locale es_MX --ignore ".venv*"` |
 | Detener PostgreSQL | `docker compose stop` |

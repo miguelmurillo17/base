@@ -55,6 +55,10 @@ caso parecido y se sigue el mismo patrón.
   propias reglas (ver más abajo).
 - Archivos en UTF-8 con fin de línea LF; `.gitattributes` lo aplica en el repositorio.
 - Sin código comentado ni importaciones sin usar.
+- Ruff aplica el formato y las reglas automatizables de esta guía con la configuración de
+  `pyproject.toml`: largo de línea, orden de importaciones, `print`, `except Exception`,
+  fechas sin zona horaria, f-strings en registros y código comentado. Las migraciones
+  quedan fuera, porque se versionan tal como las genera Django.
 
 ## Importaciones
 

@@ -20,9 +20,7 @@ def entorno(nombre: str, por_defecto: Any = _OBLIGATORIA) -> Any:
     valor = os.environ.get(nombre, "")
     if valor == "":
         if por_defecto is _OBLIGATORIA:
-            raise ImproperlyConfigured(
-                f"Falta la variable de entorno {nombre}. Ver .env.example."
-            )
+            raise ImproperlyConfigured(f"Falta la variable de entorno {nombre}. Ver .env.example.")
         return por_defecto
     return valor
 
@@ -37,8 +35,7 @@ def entorno_booleano(nombre: str, por_defecto: Any = _OBLIGATORIA) -> bool:
     if normalizado in _VALORES_FALSOS:
         return False
     raise ImproperlyConfigured(
-        f"La variable de entorno {nombre} debe ser booleana (true o false); "
-        f"se recibió {valor!r}."
+        f"La variable de entorno {nombre} debe ser booleana (true o false); se recibió {valor!r}."
     )
 
 
@@ -50,8 +47,7 @@ def entorno_entero(nombre: str, por_defecto: Any = _OBLIGATORIA) -> int:
         return int(valor)
     except ValueError:
         raise ImproperlyConfigured(
-            f"La variable de entorno {nombre} debe ser un número entero; "
-            f"se recibió {valor!r}."
+            f"La variable de entorno {nombre} debe ser un número entero; se recibió {valor!r}."
         ) from None
 
 

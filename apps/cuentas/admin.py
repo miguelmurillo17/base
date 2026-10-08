@@ -40,9 +40,7 @@ class UsuarioAdmin(UserAdmin):
         ),
         (_("Fechas"), {"fields": ("last_login", "fecha_alta")}),
     )
-    add_fieldsets = (
-        (None, {"fields": ("correo", "usable_password", "password1", "password2")}),
-    )
+    add_fieldsets = ((None, {"fields": ("correo", "usable_password", "password1", "password2")}),)
     list_display = ("correo", "nombre", "apellidos", "is_staff", "is_active")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
     search_fields = ("correo", "nombre", "apellidos")
