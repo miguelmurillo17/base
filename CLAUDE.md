@@ -48,7 +48,8 @@ sección se reemplaza por la descripción de ese proyecto; el resto del archivo 
   `python manage.py compilemessages --locale es_MX --ignore ".venv*"` (en Windows, desde la
   consola Bash de Git, que incluye `msgfmt`) y se versionan el `.po` y el `.mo`.
 - Código: `python -m ruff check .` y `python -m ruff format .`, con la configuración de
-  `pyproject.toml`.
+  `pyproject.toml`. Los hooks de `.githooks/` (`git config core.hooksPath .githooks`)
+  rechazan commits con atribución a herramientas de IA, emojis o archivos que no pasan Ruff.
 - Dependencias: se editan en `pyproject.toml` y se regeneran las versiones exactas con
   `python scripts/fijar_versiones.py`. `requirements*.txt` no se editan a mano.
 - Antes de dar un cambio por terminado se completa la verificación descrita en

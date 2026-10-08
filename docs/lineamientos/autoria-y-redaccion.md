@@ -29,6 +29,10 @@ Si una herramienta agrega estas marcas por defecto, se desactivan en su configur
 cualquier caso, se eliminan antes de hacer commit. En Claude Code, el archivo
 `.claude/settings.json` del proyecto las desactiva en commits y pull requests.
 
+Los hooks de Git de `.githooks/` rechazan los commits cuyo mensaje, líneas agregadas,
+autor, committer o rama contienen estas marcas, así como emojis y símbolos usados como
+íconos. Se activan en cada clon con `git config core.hooksPath .githooks`.
+
 ## Redacción
 
 Todo texto debe entenderse por sí mismo, sin conocer la conversación, el ticket o la sesión

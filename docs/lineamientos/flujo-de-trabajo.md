@@ -63,5 +63,9 @@ siguiente:
 7. Los textos nuevos cumplen [Autoría y redacción](autoria-y-redaccion.md): sin marcas de
    autoría de herramientas, sin emojis y sin referencias al proceso.
 
+Los hooks de Git de `.githooks/` comprueban el primer paso y la parte automatizable del
+último en cada commit: atribuciones a herramientas de IA, emojis y símbolos usados como
+íconos, y el largo de la primera línea del mensaje. No sustituyen la verificación completa.
+
 Si algún paso no puede ejecutarse, se indica cuál y por qué al entregar el cambio, en lugar
 de darlo por verificado.

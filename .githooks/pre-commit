@@ -1,0 +1,5 @@
+#!/bin/sh
+# Revisa los cambios preparados: atribuciones a herramientas de IA, emojis, identidad del
+# autor, nombre de la rama, y Ruff en los archivos de Python. Ver scripts/revisar_commit.py.
+. .githooks/interprete.sh
+exec "$PYTHON" scripts/revisar_commit.py cambios

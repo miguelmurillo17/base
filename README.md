@@ -62,6 +62,16 @@ Plantilla base para proyectos web con Django. Las convenciones del proyecto est�
    Para entrar al sitio de administración se configura antes la autenticación de dos
    factores.
 
+5. Activar los hooks de Git del proyecto, una vez por cada clon:
+
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+
+   Antes de cada commit revisan con Ruff los archivos de Python preparados y rechazan
+   atribuciones a herramientas de IA, emojis y símbolos usados como íconos, y primeras
+   líneas del mensaje de más de 72 caracteres. Usan el intérprete de `.venv`.
+
 ## Cuentas de usuario
 
 El inicio de sesión usa el correo electrónico y django-allauth. Cada función se activa con
@@ -103,6 +113,7 @@ Con el entorno virtual activado:
 | Ejecutar las pruebas | `python manage.py test` |
 | Revisar el código con Ruff | `python -m ruff check .` |
 | Aplicar el formato de Ruff | `python -m ruff format .` |
+| Revisar emojis y atribuciones en todos los archivos versionados | `python scripts/revisar_commit.py archivos` |
 | Regenerar las versiones exactas de las dependencias | `python scripts/fijar_versiones.py` |
 | Compilar las traducciones propias de `locale/` | `python manage.py compilemessages --locale es_MX --ignore ".venv*"` |
 | Detener PostgreSQL | `docker compose stop` |
@@ -148,7 +159,8 @@ docs/lineamientos/    Convenciones del proyecto
 locale/               Traducciones propias, con prioridad sobre las de las bibliotecas
 static/               Hoja de estilos base
 templates/            Plantilla base, formularios, páginas de error y pantallas de django-allauth
-scripts/              Utilidades de mantenimiento
+scripts/              Utilidades de mantenimiento y revisión de commits
+.githooks/            Hooks de Git que ejecutan scripts/revisar_commit.py
 compose.yaml          PostgreSQL para desarrollo
 pyproject.toml        Dependencias directas y metadatos
 requirements*.txt     Versiones exactas, generadas por scripts/fijar_versiones.py

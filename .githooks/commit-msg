@@ -1,0 +1,5 @@
+#!/bin/sh
+# Revisa el mensaje de commit: atribuciones a herramientas de IA, emojis y largo de la
+# primera línea. Ver scripts/revisar_commit.py.
+. .githooks/interprete.sh
+exec "$PYTHON" scripts/revisar_commit.py mensaje "$1"
