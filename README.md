@@ -110,6 +110,7 @@ Con el entorno virtual activado:
 
 | Tarea | Comando |
 |---|---|
+| Verificar un cambio por completo | `python scripts/verificar.py` |
 | Ejecutar las pruebas | `python manage.py test` |
 | Revisar el código con Ruff | `python -m ruff check .` |
 | Aplicar el formato de Ruff | `python -m ruff format .` |
@@ -127,24 +128,35 @@ En Windows, `msgfmt` está en la consola Bash de Git: desde ahí, las traduccion
 compilan con el intérprete del entorno virtual,
 `.venv/Scripts/python.exe manage.py compilemessages --locale es_MX --ignore ".venv*"`.
 
-### Revisión de la configuración de producción
+### Verificación de un cambio
 
-La revisión exige las variables obligatorias de producción, que en desarrollo quedan
-vacías, así que se definen solo para el comando.
+`python scripts/verificar.py` reúne en un solo comando los pasos automatizables de la
+verificación que describe
+[Flujo de trabajo](docs/lineamientos/flujo-de-trabajo.md), en este orden:
 
-Linux y macOS:
+1. `python -m ruff check .`
+2. `python -m ruff format --check .`
+3. `python manage.py test`
+4. `python manage.py check`
+5. `python manage.py makemigrations --check --dry-run`
+6. `python manage.py check --deploy --settings=config.settings.prod --fail-level WARNING`
+7. `python scripts/revisar_commit.py archivos`
 
-```bash
-DJANGO_ALLOWED_HOSTS=www.example.com DJANGO_SMTP_HOST=smtp.example.com DJANGO_DEFAULT_FROM_EMAIL=no-responder@example.com python manage.py check --deploy --settings=config.settings.prod --fail-level WARNING
-```
+Se detiene en el primer paso que falla, lo nombra y devuelve su código de salida, de modo
+que sirve igual en la consola y como único paso de revisión en un servidor.
 
-Windows (PowerShell):
+El paso 6 exige las variables obligatorias de producción, que en desarrollo quedan vacías.
+El script las define con valores de ejemplo solo en el entorno de ese subproceso, así que
+no quedan definidas en la consola ni hay que borrarlas después.
 
-```powershell
-$env:DJANGO_ALLOWED_HOSTS = "www.example.com"; $env:DJANGO_SMTP_HOST = "smtp.example.com"; $env:DJANGO_DEFAULT_FROM_EMAIL = "no-responder@example.com"
-python manage.py check --deploy --settings=config.settings.prod --fail-level WARNING
-Remove-Item Env:DJANGO_ALLOWED_HOSTS, Env:DJANGO_SMTP_HOST, Env:DJANGO_DEFAULT_FROM_EMAIL
-```
+Los dos pasos de Ruff recorren el árbol de trabajo, incluidos los archivos sin versionar que
+no estén ignorados, salvo lo que excluye `pyproject.toml`. El paso 7 recorre, en cambio, los
+archivos que Git ya conoce, con el contenido que tienen en el árbol de trabajo: un archivo
+nuevo entra en cuanto se agrega con `git add`, y antes de eso lo revisa el hook `pre-commit`
+al preparar el commit.
+
+La lista de revisión de [Diseño de interfaz](docs/lineamientos/diseno-de-interfaz.md) y la
+lectura de los textos nuevos no se automatizan y se hacen aparte.
 
 ## Estructura
 
@@ -159,7 +171,7 @@ docs/lineamientos/    Convenciones del proyecto
 locale/               Traducciones propias, con prioridad sobre las de las bibliotecas
 static/               Hoja de estilos base
 templates/            Plantilla base, formularios, páginas de error y pantallas de django-allauth
-scripts/              Utilidades de mantenimiento y revisión de commits
+scripts/              Verificación de un cambio, revisión de commits y fijado de versiones
 .githooks/            Hooks de Git que ejecutan scripts/revisar_commit.py
 compose.yaml          PostgreSQL para desarrollo
 pyproject.toml        Dependencias directas y metadatos

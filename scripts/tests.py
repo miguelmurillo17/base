@@ -1,12 +1,25 @@
-"""Pruebas de scripts/revisar_commit.py: símbolos, atribuciones, mensajes de commit,
-identidad, lectura de diffs y revisión con Ruff.
+"""Pruebas de los scripts del repositorio.
+
+De scripts/revisar_commit.py: símbolos, atribuciones, mensajes de commit, identidad,
+lectura de diffs y revisión con Ruff. De scripts/verificar.py: la secuencia de pasos y su
+orden, el corte en el primero que falla, el entorno y el directorio de cada subproceso, y
+lo que el script escribe por pantalla.
 
 Los emojis y símbolos se escriben con su nombre Unicode (``\\N{...}``) para que este archivo
 no los contenga literalmente.
 """
 
+import io
+import os
+import subprocess
+import sys
+from contextlib import redirect_stderr, redirect_stdout
+from typing import NamedTuple
+from unittest import mock
+
 from django.test import SimpleTestCase
 
+from scripts import verificar
 from scripts.revisar_commit import (
     LARGO_MAXIMO_PRIMERA_LINEA,
     LINEA_DE_CORTE,
@@ -21,6 +34,19 @@ from scripts.revisar_commit import (
 
 TEXTO_EN_ESPANOL = "¿Cómo se valida el año? Señal, pingüino, «comillas» y —rayas—."
 IDENTIDAD_PERSONA = "Persona Ejemplo <persona@example.com> 1791000000 -0600"
+
+# La secuencia que scripts/verificar.py debe ejecutar, escrita de forma literal para que la
+# prueba no se derive de la constante que verifica.
+SECUENCIA_ESPERADA = [
+    "-m ruff check .",
+    "-m ruff format --check .",
+    "manage.py test",
+    "manage.py check",
+    "manage.py makemigrations --check --dry-run",
+    "manage.py check --deploy --settings=config.settings.prod --fail-level WARNING",
+    "scripts/revisar_commit.py archivos",
+]
+CODIFICACION_DE_SALIDA = {"encoding": "utf-8", "errors": "backslashreplace"}
 
 
 class PruebasSimbolos(SimpleTestCase):
@@ -210,3 +236,173 @@ class PruebasRuff(SimpleTestCase):
     def test_omite_las_migraciones(self):
         problemas = revisar_python("apps/ejemplo/migrations/0002_ejemplo.py", b"import os\n")
         self.assertEqual(problemas, [])
+
+
+class SalidaGrabadora(io.StringIO):
+    """Flujo de salida que registra, en orden, las operaciones que recibe.
+
+    Permite comprobar que el encabezado de un paso se escribe y se vacía antes de lanzar
+    su subproceso, que es lo que hace que en la consola aparezca encima de su salida.
+    """
+
+    def __init__(self, eventos: list[str]):
+        super().__init__()
+        self.eventos = eventos
+        self.opciones_de_codificacion: dict[str, str] = {}
+
+    def reconfigure(self, **opciones: str) -> None:
+        self.eventos.append("reconfigura")
+        self.opciones_de_codificacion = opciones
+
+    def write(self, texto: str) -> int:
+        self.eventos.append(f"escribe {texto.strip()}")
+        return super().write(texto)
+
+    def flush(self) -> None:
+        self.eventos.append("vacia")
+        super().flush()
+
+
+class Ejecucion(NamedTuple):
+    """Lo observado durante una ejecución de ``principal`` con subprocesos sustituidos."""
+
+    codigo: int
+    llamadas: list[tuple[list[str], dict]]
+    eventos: list[str]
+    salida: SalidaGrabadora
+    errores: str
+
+
+class PruebasVerificar(SimpleTestCase):
+    """Comprueba scripts/verificar.py sustituyendo ``subprocess.run``, salvo una prueba."""
+
+    def correr(self, codigos: list[int]) -> Ejecucion:
+        """Ejecuta ``principal`` con ``codigos`` como código de salida de cada subproceso."""
+        llamadas: list[tuple[list[str], dict]] = []
+        eventos: list[str] = []
+
+        def run_sustituido(argumentos: list[str], **opciones) -> subprocess.CompletedProcess:
+            llamadas.append((argumentos, opciones))
+            eventos.append(f"ejecuta {verificar.PASOS[len(llamadas) - 1].nombre}")
+            return subprocess.CompletedProcess(argumentos, codigos[len(llamadas) - 1])
+
+        salida, errores = SalidaGrabadora(eventos), io.StringIO()
+        with (
+            mock.patch.object(verificar.subprocess, "run", run_sustituido),
+            redirect_stdout(salida),
+            redirect_stderr(errores),
+        ):
+            codigo = verificar.principal()
+        return Ejecucion(codigo, llamadas, eventos, salida, errores.getvalue())
+
+    def paso_de_produccion(self) -> int:
+        """Devuelve el índice del paso que revisa la configuración de producción.
+
+        Lo localiza por ``--deploy``, no por sus variables, para que las pruebas que lo
+        usan fallen si las variables cuelgan de otro paso.
+        """
+        indices = [
+            indice for indice, paso in enumerate(verificar.PASOS) if "--deploy" in paso.argumentos
+        ]
+        self.assertEqual(len(indices), 1)
+        self.assertEqual(verificar.PASOS[indices[0]].variables, verificar.ENTORNO_PRODUCCION)
+        return indices[0]
+
+    def test_la_secuencia_es_la_del_lineamiento_en_su_orden(self):
+        self.assertEqual(
+            [" ".join(paso.argumentos) for paso in verificar.PASOS], SECUENCIA_ESPERADA
+        )
+
+    def test_devuelve_cero_cuando_todos_los_pasos_pasan(self):
+        self.assertEqual(self.correr([0] * len(verificar.PASOS)).codigo, 0)
+
+    def test_ejecuta_todos_los_pasos_cuando_ninguno_falla(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        self.assertEqual(len(ejecucion.llamadas), len(verificar.PASOS))
+
+    def test_informa_el_exito_al_terminar(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        self.assertIn("sin problemas", ejecucion.salida.getvalue())
+
+    def test_se_detiene_en_el_primer_paso_que_falla(self):
+        ejecucion = self.correr([0, 3] + [0] * (len(verificar.PASOS) - 2))
+        self.assertEqual(ejecucion.codigo, 3)
+        self.assertEqual(len(ejecucion.llamadas), 2)
+
+    def test_nombra_el_paso_que_falla(self):
+        ejecucion = self.correr([0, 3] + [0] * (len(verificar.PASOS) - 2))
+        self.assertIn(verificar.PASOS[1].nombre, ejecucion.errores)
+
+    def test_anuncia_y_vacia_cada_paso_antes_de_ejecutarlo(self):
+        ejecucion = self.correr([0, 1] + [0] * (len(verificar.PASOS) - 2))
+        total = len(verificar.PASOS)
+        primero, segundo = verificar.PASOS[0].nombre, verificar.PASOS[1].nombre
+        self.assertEqual(
+            ejecucion.eventos,
+            [
+                "reconfigura",
+                f"escribe [1/{total}] {primero}",
+                "vacia",
+                f"ejecuta {primero}",
+                f"escribe [2/{total}] {segundo}",
+                "vacia",
+                f"ejecuta {segundo}",
+            ],
+        )
+
+    def test_reconfigura_la_salida_en_utf8(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        self.assertEqual(ejecucion.salida.opciones_de_codificacion, CODIFICACION_DE_SALIDA)
+
+    def test_cada_paso_usa_el_interprete_actual(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        self.assertEqual(
+            [argumentos for argumentos, _ in ejecucion.llamadas],
+            [[sys.executable, *paso.argumentos] for paso in verificar.PASOS],
+        )
+
+    def test_la_revision_de_produccion_recibe_sus_variables(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        entorno = ejecucion.llamadas[self.paso_de_produccion()][1]["env"]
+        for nombre, valor in verificar.ENTORNO_PRODUCCION.items():
+            with self.subTest(variable=nombre):
+                self.assertEqual(entorno[nombre], valor)
+
+    def test_la_revision_de_produccion_hereda_el_entorno_del_proceso(self):
+        # Una variable de la consola con el mismo nombre que una del script: sin ella, la
+        # prueba no distinguiría el orden de la fusión en un equipo que no la tenga
+        # definida. Sin el entorno heredado, el subproceso perdería la configuración de la
+        # base de datos y la clave secreta, y la revisión fallaría por un motivo ajeno.
+        with mock.patch.dict(os.environ, {"DJANGO_ALLOWED_HOSTS": "valor-de-la-consola"}):
+            ejecucion = self.correr([0] * len(verificar.PASOS))
+            entorno = ejecucion.llamadas[self.paso_de_produccion()][1]["env"]
+            self.assertEqual(entorno, dict(os.environ) | verificar.ENTORNO_PRODUCCION)
+
+    def test_los_demas_pasos_no_alteran_el_entorno(self):
+        # Los pasos se distinguen por su posición y no por tener variables propias: así la
+        # prueba falla también si un paso que no debería recibe las de producción.
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        produccion = self.paso_de_produccion()
+        pasos = enumerate(zip(verificar.PASOS, ejecucion.llamadas, strict=True))
+        for indice, (paso, (_, opciones)) in pasos:
+            if indice != produccion:
+                with self.subTest(paso=paso.nombre):
+                    self.assertEqual(opciones["env"], dict(os.environ))
+
+    def test_cada_paso_se_ejecuta_en_la_raiz_del_repositorio(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        for paso, (_, opciones) in zip(verificar.PASOS, ejecucion.llamadas, strict=True):
+            with self.subTest(paso=paso.nombre):
+                self.assertEqual(opciones["cwd"], verificar.RAIZ)
+
+    def test_ningun_paso_deja_que_python_lance(self):
+        ejecucion = self.correr([0] * len(verificar.PASOS))
+        for paso, (_, opciones) in zip(verificar.PASOS, ejecucion.llamadas, strict=True):
+            with self.subTest(paso=paso.nombre):
+                self.assertFalse(opciones["check"])
+
+    def test_ejecutar_devuelve_el_codigo_de_salida_del_subproceso(self):
+        # La única prueba que lanza un subproceso real, para que el camino que las demás
+        # sustituyen quede comprobado de extremo a extremo al menos una vez.
+        paso = verificar.Paso("Salida con código", ["-c", "import sys; sys.exit(7)"])
+        self.assertEqual(verificar.ejecutar(paso), 7)

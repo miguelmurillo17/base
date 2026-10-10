@@ -57,11 +57,20 @@ siguiente:
 3. `python manage.py check` no informa problemas.
 4. `python manage.py makemigrations --check --dry-run` no detecta migraciones pendientes.
 5. Si el cambio toca ajustes de seguridad o de producción, la revisión `check --deploy`
-   indicada en `CLAUDE.md` termina sin advertencias.
+   indicada en el `README.md` termina sin advertencias.
 6. Si el cambio incluye pantallas, cumple la lista de revisión de
    [Diseño de interfaz](diseno-de-interfaz.md).
 7. Los textos nuevos cumplen [Autoría y redacción](autoria-y-redaccion.md): sin marcas de
    autoría de herramientas, sin emojis y sin referencias al proceso.
+
+`python scripts/verificar.py` ejecuta, en este orden, Ruff, las pruebas, `check`, la
+comprobación de migraciones pendientes, la revisión de producción y la revisión de símbolos
+y atribuciones. La de producción la ejecuta siempre, sin la condición del quinto punto. Se
+detiene en el primero que falla, cualquiera de ellos, y ese paso queda nombrado junto con su
+código de salida, que es también el del script.
+
+Quedan a mano la lista de revisión de interfaz y la lectura de los textos nuevos: de los
+símbolos y las atribuciones, el script solo revisa los archivos que Git ya conoce.
 
 Los hooks de Git de `.githooks/` comprueban el primer paso y la parte automatizable del
 último en cada commit: atribuciones a herramientas de IA, emojis y símbolos usados como

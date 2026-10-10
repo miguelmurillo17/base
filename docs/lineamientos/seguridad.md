@@ -135,7 +135,7 @@ consecuencia:
 ## Configuración y dependencias
 
 - Todo cambio en los ajustes de seguridad o en `config/settings/prod.py` se revisa con el
-  comando `check --deploy` indicado en `CLAUDE.md`, que debe terminar sin advertencias.
+  comando `check --deploy` indicado en el `README.md`, que debe terminar sin advertencias.
 - Los límites de intentos de inicio de sesión necesitan, en producción, una caché compartida
   entre procesos y la dirección IP real de la persona cuando el sitio está detrás de un
   proxy.

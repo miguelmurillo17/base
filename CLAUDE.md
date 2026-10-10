@@ -42,8 +42,12 @@ sección se reemplaza por la descripción de ese proyecto; el resto del archivo 
   activado: `.venv/Scripts/python.exe` en Windows y `.venv/bin/python` en Linux y macOS. Los
   ejemplos con `python` suponen ese intérprete.
 - PostgreSQL de desarrollo: `docker compose up -d --wait`. Las pruebas lo necesitan.
-- Pruebas: `python manage.py test`. Revisión de producción:
-  `DJANGO_ALLOWED_HOSTS=www.example.com DJANGO_SMTP_HOST=smtp.example.com DJANGO_DEFAULT_FROM_EMAIL=no-responder@example.com python manage.py check --deploy --settings=config.settings.prod --fail-level WARNING`.
+- Pruebas: `python manage.py test`.
+- Verificación completa de un cambio: `python scripts/verificar.py`. Ejecuta en orden Ruff,
+  las pruebas, `manage.py check`, la comprobación de migraciones pendientes, la revisión de
+  producción `check --deploy` con las variables que ese entorno exige, y la revisión de
+  autoría y símbolos de todos los archivos versionados. Se detiene en el primer paso que
+  falla y lo nombra.
 - Traducciones propias en `locale/es_MX/`: después de editar el `.po` se compila con
   `python manage.py compilemessages --locale es_MX --ignore ".venv*"` (en Windows, desde la
   consola Bash de Git, que incluye `msgfmt`) y se versionan el `.po` y el `.mo`.
@@ -53,8 +57,9 @@ sección se reemplaza por la descripción de ese proyecto; el resto del archivo 
 - Dependencias: se editan en `pyproject.toml` y se regeneran las versiones exactas con
   `python scripts/fijar_versiones.py`. `requirements*.txt` no se editan a mano.
 - Antes de dar un cambio por terminado se completa la verificación descrita en
-  [Flujo de trabajo](docs/lineamientos/flujo-de-trabajo.md): Ruff, pruebas,
-  `manage.py check` y ausencia de migraciones pendientes, como mínimo.
+  [Flujo de trabajo](docs/lineamientos/flujo-de-trabajo.md). `python scripts/verificar.py`
+  cubre sus pasos automatizables; la lista de revisión de interfaz y la lectura de los
+  textos nuevos se hacen aparte.
 
 ## Lineamientos
 
