@@ -21,9 +21,13 @@ No se permiten:
 - En código y documentación: encabezados, comentarios o docstrings que indiquen que el
   contenido fue generado o asistido por IA.
 
-Quedan fuera de esta regla los archivos que una herramienta genera y mantiene por sí misma,
-como las migraciones de Django o los archivos de bloqueo de dependencias, que se versionan
-tal como se producen.
+Quedan fuera de esta regla los archivos que se versionan tal como se producen y que el
+proyecto no redacta: los que una herramienta genera y mantiene por sí misma, como las
+migraciones de Django o los archivos de bloqueo de dependencias, y el material que llega de
+una fuente propia, como el design system de `docs/design_base/`. Las rutas exentas se
+declaran en `DIRECTORIOS_QUE_NO_SE_REVISAN` de `scripts/revisar_commit.py` y en
+`extend-exclude` de `pyproject.toml`; ampliar esa lista es una decisión del proyecto, no un
+atajo para evitar una revisión.
 
 Si una herramienta agrega estas marcas por defecto, se desactivan en su configuración y, en
 cualquier caso, se eliminan antes de hacer commit. En Claude Code, el archivo

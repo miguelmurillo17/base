@@ -54,6 +54,8 @@ sección se reemplaza por la descripción de ese proyecto; el resto del archivo 
 - Código: `python -m ruff check .` y `python -m ruff format .`, con la configuración de
   `pyproject.toml`. Los hooks de `.githooks/` (`git config core.hooksPath .githooks`)
   rechazan commits con atribución a herramientas de IA, emojis o archivos que no pasan Ruff.
+  Queda fuera el material que se versiona tal como se produce: las migraciones y el design
+  system de `docs/design_base/`.
 - Dependencias: se editan en `pyproject.toml` y se regeneran las versiones exactas con
   `python scripts/fijar_versiones.py`. `requirements*.txt` no se editan a mano.
 - Antes de dar un cambio por terminado se completa la verificación descrita en

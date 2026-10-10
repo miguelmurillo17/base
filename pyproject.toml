@@ -32,8 +32,9 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py314"
-# Las migraciones se versionan tal como las genera Django.
-extend-exclude = ["**/migrations/*"]
+# Material que se versiona tal como se produce: las migraciones, tal como las genera
+# Django, y el design system, cuyo código viene de su propia fuente.
+extend-exclude = ["**/migrations/*", "docs/design_base/**"]
 
 [tool.ruff.lint]
 select = [

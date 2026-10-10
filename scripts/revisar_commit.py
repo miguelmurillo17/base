@@ -13,7 +13,8 @@ Lo ejecutan los hooks de Git de ``.githooks/`` y también puede ejecutarse a man
 En los archivos solo se revisan las líneas agregadas, para que un cambio no se rechace
 por contenido que ya estaba en el repositorio. Los documentos que describen las reglas de
 atribución, y este script con sus pruebas, citan los textos prohibidos como ejemplo; en
-ellos solo se revisan los símbolos.
+ellos solo se revisan los símbolos. Los directorios de
+``DIRECTORIOS_QUE_NO_SE_REVISAN`` quedan fuera por completo.
 
 Uso, con el intérprete del entorno virtual:
 
@@ -44,6 +45,11 @@ ARCHIVOS_QUE_CITAN_ATRIBUCIONES = frozenset(
         "scripts/tests.py",
     }
 )
+
+# Directorios cuyo contenido se versiona tal como se produce, de modo que sus textos y sus
+# símbolos son los de su origen y no se revisan. Las rutas llevan barra normal y barra
+# final, como las devuelve git. Ruff los excluye con extend-exclude en pyproject.toml.
+DIRECTORIOS_QUE_NO_SE_REVISAN = ("docs/design_base/",)
 
 # Bloques de Unicode de emojis, pictogramas y símbolos que suelen usarse como íconos. Los
 # signos de la escritura en español (letras acentuadas, ñ, ¿, ¡, comillas, rayas) están
@@ -106,8 +112,15 @@ def es_atribucion(linea: str) -> bool:
     return any(patron.search(linea) for patron in _PATRONES_ATRIBUCION)
 
 
+def se_revisa(ruta: str) -> bool:
+    """Indica si ``ruta`` se revisa o se versiona tal como se produce."""
+    return not ruta.startswith(DIRECTORIOS_QUE_NO_SE_REVISAN)
+
+
 def revisar_lineas(ruta: str, lineas: Iterable[tuple[int, str]]) -> list[str]:
     """Revisa las líneas numeradas de un archivo y devuelve un problema por línea."""
+    if not se_revisa(ruta):
+        return []
     revisar_atribucion = ruta not in ARCHIVOS_QUE_CITAN_ATRIBUCIONES
     problemas = []
     for numero, linea in lineas:

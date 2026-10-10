@@ -117,6 +117,25 @@ class PruebasRevisarLineas(SimpleTestCase):
         problemas = revisar_lineas("CLAUDE.md", [(1, "\N{CHECK MARK} Regla")])
         self.assertEqual(len(problemas), 1)
 
+    def test_el_material_que_no_se_revisa_admite_simbolos(self):
+        problemas = revisar_lineas(
+            "docs/design_base/ds/components.css",
+            [(1, "\N{CHECK MARK} \N{BLACK FOUR POINTED STAR} \N{RIGHTWARDS ARROW}")],
+        )
+        self.assertEqual(problemas, [])
+
+    def test_el_material_que_no_se_revisa_admite_atribuciones(self):
+        problemas = revisar_lineas(
+            "docs/design_base/ds/APLICACION.md",
+            [(1, "Generated with Copilot")],
+        )
+        self.assertEqual(problemas, [])
+
+    def test_un_directorio_de_nombre_parecido_si_se_revisa(self):
+        # La comparación es por prefijo: debe exigir la barra final del directorio.
+        problemas = revisar_lineas("docs/design_base_ajeno.md", [(1, "\N{CHECK MARK}")])
+        self.assertEqual(len(problemas), 1)
+
 
 class PruebasMensaje(SimpleTestCase):
     def test_mensaje_correcto_no_tiene_problemas(self):
@@ -235,6 +254,10 @@ class PruebasRuff(SimpleTestCase):
 
     def test_omite_las_migraciones(self):
         problemas = revisar_python("apps/ejemplo/migrations/0002_ejemplo.py", b"import os\n")
+        self.assertEqual(problemas, [])
+
+    def test_omite_el_material_que_no_se_revisa(self):
+        problemas = revisar_python("docs/design_base/ds/gen_tokens.py", b"import os\n")
         self.assertEqual(problemas, [])
 
 

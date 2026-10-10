@@ -108,6 +108,23 @@ mientras la verificación se haga por enlace. Para cambiarlo se desactiva la apl
 autenticación, se cambia y verifica el correo, y se vuelve a activar; el personal no puede
 entrar al sitio de administración mientras tanto.
 
+## Design system
+
+`docs/design_base/` contiene la fundación visual común a los sistemas internos: 8 temas de
+color, 3 densidades y una capa de clases `ds-*` que funciona con plantillas de Django, Vue o
+React. Todo se sirve desde el propio sitio, sin CDN ni fuentes remotas, como exige la
+política de seguridad de contenido.
+
+- `docs/design_base/README.md` explica cómo elegir tema, densidad y prefijo.
+- `docs/design_base/ds/design-system.html` se abre en el navegador y muestra cada componente
+  con los selectores de tema y densidad.
+- `docs/design_base/ds/APLICACION.md` son las reglas operativas para aplicarlo.
+
+Al aplicarlo a un proyecto se copian a `static/` los archivos que su README marca:
+`themes.css`, `components.css`, `ds.js`, `icons.svg` y `fonts/`. El directorio se versiona
+tal como se produce, así que queda fuera de Ruff y de la revisión de símbolos y
+atribuciones.
+
 ## Comandos habituales
 
 Con el entorno virtual activado:
@@ -118,7 +135,7 @@ Con el entorno virtual activado:
 | Ejecutar las pruebas | `python manage.py test` |
 | Revisar el código con Ruff | `python -m ruff check .` |
 | Aplicar el formato de Ruff | `python -m ruff format .` |
-| Revisar emojis y atribuciones en todos los archivos versionados | `python scripts/revisar_commit.py archivos` |
+| Revisar emojis y atribuciones en los archivos versionados | `python scripts/revisar_commit.py archivos` |
 | Regenerar las versiones exactas de las dependencias | `python scripts/fijar_versiones.py` |
 | Compilar las traducciones propias de `locale/` | `python manage.py compilemessages --locale es_MX --ignore ".venv*"` |
 | Detener PostgreSQL | `docker compose stop` |
@@ -159,6 +176,11 @@ archivos que Git ya conoce, con el contenido que tienen en el árbol de trabajo:
 nuevo entra en cuanto se agrega con `git add`, y antes de eso lo revisa el hook `pre-commit`
 al preparar el commit.
 
+Los dos pasos omiten el material que se versiona tal como se produce: las migraciones y
+`docs/design_base/`. Ruff lo declara en `extend-exclude` de `pyproject.toml`, y la revisión
+de símbolos y atribuciones en `DIRECTORIOS_QUE_NO_SE_REVISAN` de
+`scripts/revisar_commit.py`.
+
 La lista de revisión de [Diseño de interfaz](docs/lineamientos/diseno-de-interfaz.md) y la
 lectura de los textos nuevos no se automatizan y se hacen aparte.
 
@@ -172,6 +194,7 @@ config/               Configuración del proyecto
   entorno.py          Lectura de variables de entorno
   sitio_administracion.py  Sitio de administración con acceso por django-allauth
 docs/lineamientos/    Convenciones del proyecto
+docs/design_base/     Design system: temas, densidades, clases ds-*, fuentes e íconos
 locale/               Traducciones propias, con prioridad sobre las de las bibliotecas
 static/               Hoja de estilos base
 templates/            Plantilla base, formularios, páginas de error y pantallas de django-allauth
