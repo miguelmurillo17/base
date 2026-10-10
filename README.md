@@ -184,6 +184,11 @@ de símbolos y atribuciones en `DIRECTORIOS_QUE_NO_SE_REVISAN` de
 La lista de revisión de [Diseño de interfaz](docs/lineamientos/diseno-de-interfaz.md) y la
 lectura de los textos nuevos no se automatizan y se hacen aparte.
 
+En cada pull request, y en cada envío a `main`, el flujo de
+`.github/workflows/verificacion.yml` levanta PostgreSQL y ejecuta ese mismo script como
+único paso de revisión. Así la verificación no depende de que cada clon haya activado los
+hooks de Git.
+
 ## Estructura
 
 ```text
@@ -200,6 +205,7 @@ static/               Hoja de estilos base
 templates/            Plantilla base, formularios, páginas de error y pantallas de django-allauth
 scripts/              Verificación de un cambio, revisión de commits y fijado de versiones
 .githooks/            Hooks de Git que ejecutan scripts/revisar_commit.py
+.github/              Flujo de verificación y plantilla de pull request
 compose.yaml          PostgreSQL para desarrollo
 pyproject.toml        Dependencias directas y metadatos
 requirements*.txt     Versiones exactas, generadas por scripts/fijar_versiones.py

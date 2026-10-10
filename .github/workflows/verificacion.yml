@@ -1,0 +1,68 @@
+# Ejecuta la verificación del proyecto en cada pull request, de modo que no dependa de que
+# cada clon haya activado los hooks de Git con core.hooksPath.
+#
+# El único paso de revisión es scripts/verificar.py, para que la lista de comprobaciones
+# viva en el repositorio y no se duplique aquí.
+name: Verificación
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Un pull request con varios envíos seguidos solo revisa el último.
+concurrency:
+  group: verificacion-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+
+    # Valores de relleno para un servicio efímero que se destruye con el trabajo. Las
+    # variables obligatorias del proyecto están descritas en .env.example.
+    env:
+      DJANGO_SECRET_KEY: clave-de-relleno-para-la-revision
+      POSTGRES_DB: base
+      POSTGRES_USER: base
+      POSTGRES_PASSWORD: relleno-para-la-revision
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: "5432"
+      # Las rutas de la autenticación de dos factores se registran al cargar el proyecto.
+      CUENTAS_DOBLE_FACTOR_ACTIVO: "true"
+
+    services:
+      db:
+        image: postgres:18
+        env:
+          POSTGRES_DB: base
+          POSTGRES_USER: base
+          POSTGRES_PASSWORD: relleno-para-la-revision
+        ports:
+          - 5432:5432
+        # Por TCP, igual que en compose.yaml: durante la inicialización el servidor
+        # temporal solo escucha en el socket local.
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U base -d base"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # La serie que declara requires-python en pyproject.toml.
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar las dependencias
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Verificar
+        run: python scripts/verificar.py

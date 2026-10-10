@@ -76,5 +76,9 @@ Los hooks de Git de `.githooks/` comprueban el primer paso y la parte automatiza
 último en cada commit: atribuciones a herramientas de IA, emojis y símbolos usados como
 íconos, y el largo de la primera línea del mensaje. No sustituyen la verificación completa.
 
+En cada pull request el flujo de `.github/` ejecuta el script en el servidor, de modo que la
+verificación no depende de que cada clon haya activado los hooks. La plantilla de pull
+request lista los siete pasos y la documentación que acompaña al cambio.
+
 Si algún paso no puede ejecutarse, se indica cuál y por qué al entregar el cambio, en lugar
 de darlo por verificado.
