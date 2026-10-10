@@ -20,12 +20,16 @@ permissions:
 
 jobs:
   verificar:
-    runs-on: ubuntu-latest
+    # Versión fija en lugar de ubuntu-latest: una serie recién publicada se adopta de forma
+    # explícita, igual que las del lenguaje y el framework.
+    runs-on: ubuntu-24.04
 
     # Valores de relleno para un servicio efímero que se destruye con el trabajo. Las
     # variables obligatorias del proyecto están descritas en .env.example.
     env:
-      DJANGO_SECRET_KEY: clave-de-relleno-para-la-revision
+      # La revisión de producción incluye security.W009, que exige al menos 50 caracteres,
+      # así que este valor no puede acortarse aunque no sea un secreto.
+      DJANGO_SECRET_KEY: clave-de-relleno-sin-valor-para-la-revision-en-el-servidor
       POSTGRES_DB: base
       POSTGRES_USER: base
       POSTGRES_PASSWORD: relleno-para-la-revision
@@ -52,9 +56,9 @@ jobs:
           --health-retries 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           # La serie que declara requires-python en pyproject.toml.
           python-version: "3.14"
