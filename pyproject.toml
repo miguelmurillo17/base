@@ -2,6 +2,8 @@
 name = "base"
 version = "0.1.0"
 description = "Plantilla base para proyectos web con Django."
+license = "MIT"
+license-files = ["LICENSE"]
 # pip no lo verifica al instalar grupos de dependencias; lo leen otras herramientas.
 requires-python = ">=3.14,<3.15"
 

@@ -3,6 +3,10 @@
 Plantilla base para proyectos web con Django. Las convenciones del proyecto están en
 [`docs/lineamientos/`](docs/lineamientos/README.md).
 
+De uso libre bajo la licencia [MIT](LICENSE): se puede usar, copiar y modificar, incluso
+con fines comerciales, conservando el aviso de copyright. Un proyecto creado a partir de
+esta plantilla reemplaza ese archivo por el suyo.
+
 ## Requisitos
 
 - Python 3.14, en su última versión de corrección
